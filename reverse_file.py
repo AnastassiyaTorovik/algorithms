@@ -6,7 +6,7 @@ def file_length(name: str) -> int:
     return length
 
 
-def read_file(name: str, offset: int, size: int, output_buf_offset: int) -> bytearray:
+def read_file(name: str, offset: int, size: int, output_buf: bytearray, output_buf_offset: int) -> None:
     """
     Reads `size` bytes from file `name` starting from `offset` index and
     stores them into `output_buf` starting from `output_buf_offset`
@@ -14,39 +14,26 @@ def read_file(name: str, offset: int, size: int, output_buf_offset: int) -> byte
     with open(name, "rb") as f:
         f.seek(offset)
         chunk = f.read(size)
-        output_buf = bytearray(chunk[output_buf_offset:])
-        return output_buf
+        output_buf[:output_buf_offset] = chunk
 
 
 def write_file(buf: bytearray, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
     """
     Write `size` bytes from `buf` buffer starting from `buf_offset` into `output_file` starting from `output_file_offset`
   """
-    with open(output_file, "r+b") as f:
+    with open(output_file, "r+") as f:
         f.seek(output_file_offset)
-        f.write(bytes(buf[buf_offset:size]))
+        f.write(bytes(buf[buf_offset:size]).decode())
 
 
 def reverse_file_in_memory(name: str):
-    byte_size = 2
     length = file_length(name)
-    mid_index = length // 2
-    left_offset = 0
-    right_offset = length - byte_size
-
-    while True:
-        if left_offset >= mid_index:
-            break
-
-        left_chunk = read_file(name, left_offset, byte_size, 0)[::-1]
-        right_chunk = read_file(name, right_offset, byte_size, 0)[::-1]
-
-        left_chunk, right_chunk = right_chunk, left_chunk
-        write_file(left_chunk, 0, byte_size, name, left_offset)
-        write_file(right_chunk, 0, byte_size, name, right_offset)
-
-        left_offset += byte_size
-        right_offset -= byte_size
+    byte_size = length
+    output_buff = bytearray()
+    offset = 0
+    output_buff_offset = 0
+    read_file(name, offset, byte_size, output_buff, output_buff_offset)
+    write_file(output_buff[::-1], 0, byte_size, name, output_buff_offset)
 
 
 if __name__ == "__main__":
