@@ -14,7 +14,7 @@ def read_file(name: str, offset: int, size: int, output_buf: bytearray, output_b
     with open(name, "rb") as f:
         f.seek(offset)
         chunk = f.read(size)
-        output_buf[:output_buf_offset] = chunk
+        output_buf[output_buf_offset:] = chunk
 
 
 def write_file(buf: bytearray, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
