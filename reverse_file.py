@@ -21,9 +21,9 @@ def write_file(buf: bytearray, buf_offset: int, size: int, output_file: str, out
     """
     Write `size` bytes from `buf` buffer starting from `buf_offset` into `output_file` starting from `output_file_offset`
   """
-    with open(output_file, "r+") as f:
+    with open(output_file, "wb+") as f:
         f.seek(output_file_offset)
-        f.write(bytes(buf[buf_offset:size]).decode())
+        f.write(bytes(buf[buf_offset:size]))
 
 
 def reverse_file_in_memory(name: str):
