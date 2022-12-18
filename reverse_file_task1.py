@@ -21,20 +21,19 @@ def write_file(buf: bytearray, buf_offset: int, size: int, output_file: str, out
     """
     Write `size` bytes from `buf` buffer starting from `buf_offset` into `output_file` starting from `output_file_offset`
   """
-    with open(output_file, "wb+") as f:
+    with open(output_file, "r+b") as f:
         f.seek(output_file_offset)
-        f.write(bytes(buf[buf_offset:size]))
+        f.write(bytes(buf[buf_offset:buf_offset+size]))
 
 
 def reverse_file_in_memory(name: str):
+    """Reverse a content of the file `name`. Whole file is loaded into memory"""
     length = file_length(name)
-    byte_size = length
-    output_buff = bytearray()
+    output_buff = bytearray(length)
     offset = 0
-    output_buff_offset = 0
-    read_file(name, offset, byte_size, output_buff, output_buff_offset)
-    write_file(output_buff[::-1], 0, byte_size, name, output_buff_offset)
+    read_file(name, offset, length, output_buff, offset)
+    write_file(output_buff[::-1], offset, length, name, offset)
 
 
 if __name__ == "__main__":
-    file_length = reverse_file_in_memory('test.txt')
+    reverse_file_in_memory(name='test.txt')
