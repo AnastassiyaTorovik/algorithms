@@ -33,4 +33,4 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
 
 
 if __name__ == "__main__":
-    reverse_file_in_memory(FileIo(), name='test.txt', buf_size=5)
+    reverse_file_in_memory(FileIo(), name='test.txt', buf_size=3)
