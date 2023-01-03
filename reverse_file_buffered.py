@@ -9,7 +9,7 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
     byte_size = buf_size//2
     output_buff = bytearray(buf_size)
     left_offset = 0
-    right_offset = length - byte_size if length >= byte_size else length
+    right_offset = length - byte_size
     remaining_to_reverse = length
 
     while left_offset <= right_offset:
