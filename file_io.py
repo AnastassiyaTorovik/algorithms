@@ -18,7 +18,7 @@ class Io(ABC):
         pass
 
     @abstractmethod
-    def write_file(self, buf: bytearray, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
+    def write_file(self, buf: bytes, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
         pass
 
 
@@ -30,7 +30,7 @@ class FileIo(Io):
     def read_file(self, name: str, offset: int, size: int, output_buf: bytearray, output_buf_offset: int) -> None:
         _read_file(name, offset, size, output_buf, output_buf_offset)
 
-    def write_file(self, buf: bytearray, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
+    def write_file(self, buf: bytes, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
         _write_file(buf, buf_offset, size, output_file, output_file_offset)
 
 
@@ -50,10 +50,10 @@ def _read_file(name: str, offset: int, size: int, output_buf: bytearray, output_
         output_buf[output_buf_offset:] = chunk
 
 
-def _write_file(buf: bytearray, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
+def _write_file(buf: bytes, buf_offset: int, size: int, output_file: str, output_file_offset: int) -> None:
     """
     Write `size` bytes from `buf` buffer starting from `buf_offset` into `output_file` starting from `output_file_offset`
   """
     with open(output_file, "r+b") as f:
         f.seek(output_file_offset)
-        f.write(bytes(buf[buf_offset:buf_offset + size]))
+        f.write(buf[buf_offset:buf_offset + size])
