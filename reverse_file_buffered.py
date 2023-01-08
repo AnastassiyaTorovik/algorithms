@@ -26,6 +26,7 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
         remaining_to_reverse -= chunk_size * 2
 
     if remaining_to_reverse > 1:
+        output_buff = bytearray(remaining_to_reverse)
         io.read_file(name, left_offset, remaining_to_reverse, output_buff, 0)
         reversed_output_buff = output_buff[::-1]
         io.write_file(reversed_output_buff, 0, remaining_to_reverse, name, left_offset)
