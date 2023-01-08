@@ -7,7 +7,7 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
 
     length = io.file_length(name)
     chunk_size = buf_size//2
-    output_buff = bytearray(buf_size)
+    output_buff = bytearray(chunk_size*2)
     left_offset = 0
     right_offset = length - chunk_size
     remaining_to_reverse = length
