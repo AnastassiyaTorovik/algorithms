@@ -24,12 +24,11 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
         left_offset += chunk_size
         right_offset -= chunk_size
         remaining_to_reverse -= chunk_size * 2
-    else:
-        # reverse remaining characters
-        if remaining_to_reverse > 1:
-            io.read_file(name, left_offset, remaining_to_reverse, output_buff, 0)
-            reversed_output_buff = output_buff[::-1]
-            io.write_file(reversed_output_buff, 0, remaining_to_reverse, name, left_offset)
+
+    if remaining_to_reverse > 1:
+        io.read_file(name, left_offset, remaining_to_reverse, output_buff, 0)
+        reversed_output_buff = output_buff[::-1]
+        io.write_file(reversed_output_buff, 0, remaining_to_reverse, name, left_offset)
 
 
 if __name__ == "__main__":
