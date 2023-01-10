@@ -12,7 +12,7 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
     right_offset = length - chunk_size
     remaining_to_reverse = length
 
-    while left_offset < right_offset:
+    while left_offset < right_offset and remaining_to_reverse > chunk_size*2:
         io.read_file(name, left_offset, chunk_size, output_buff, 0)
         io.read_file(name, right_offset, chunk_size, output_buff, chunk_size)
 
