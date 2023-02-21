@@ -30,7 +30,8 @@ def test_task_2(size):
     _logger.info('Reversing completed')
     assert io.get_file_content('abc') == bytes(reversed(data))
 
-@pytest.mark.parametrize('size, allowed_buffer', [(0, 2), (7, 5), (33, 6), (30, 6), (1, 2), (3, 20), (150, 8)])
+@pytest.mark.parametrize('size, allowed_buffer', [(0, 2), (7, 5), (33, 6), (30, 6), (1, 2), (3, 20), (150, 8),
+                                                  (20, 4)])
 def test_buffered_reverse(size, allowed_buffer):
     data = _get_data(size)
     io = StubIo()

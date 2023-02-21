@@ -12,14 +12,16 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
     left_offset = 0
     right_offset = length - left_offset - min(chunk, mid - left_offset)
 
-    if length <= chunk:
-        chunk = length
-        output_buff = bytearray(chunk)
-        io.read_file(name, left_offset, chunk, output_buff, 0)
-        reversed_output_buff = output_buff[::-1]
-        io.write_file(reversed_output_buff, 0, chunk, name, left_offset)
-    else:
-        while left_offset < right_offset or 0 < min(chunk, mid - left_offset) < chunk:
+
+    while left_offset < right_offset or 0 < min(chunk, mid - left_offset) < chunk:
+        if length <= chunk:
+            chunk = length
+            output_buff = bytearray(chunk)
+            io.read_file(name, left_offset, chunk, output_buff, 0)
+            reversed_output_buff = output_buff[::-1]
+            io.write_file(reversed_output_buff, 0, chunk, name, left_offset)
+            break
+        else:
             io.read_file(name, left_offset, chunk, output_buff, 0)
             io.read_file(name, right_offset, chunk, output_buff, chunk)
 
