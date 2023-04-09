@@ -6,46 +6,34 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
     assert buf_size >= 2, "Minimum allowed buf_size is 2"
 
     length = io.file_length(name)
-    chunk = buf_size//2 if buf_size < length else length
-    output_buff = bytearray(min(chunk*2,length))
+    chunk = buf_size//2
+    output_buff = bytearray(chunk*2)
     mid = length//2
     left_offset = 0
     right_offset = length - left_offset - min(chunk, mid - left_offset)
 
 
-    while left_offset < right_offset or 0 < min(chunk, mid - left_offset) < chunk:
-        if length <= buf_size:
-            io.read_file(name, left_offset, chunk, output_buff, 0)
-            reversed_output_buff = output_buff[::-1]
-            io.write_file(reversed_output_buff, 0, chunk, name, left_offset)
-            break
+    if length < buf_size:
+        chunk = length
+        io.read_file(name, left_offset, chunk, output_buff, 0)
+        output_buff.reverse()
+        io.write_file(output_buff, len(output_buff)-chunk, chunk, name, left_offset)
+        return
 
-        if mid - left_offset < chunk:
-            if length % 2 == 0:
-                io.read_file(name, left_offset, (mid - left_offset)*2, output_buff, 0)
-                output_buff.reverse()
-                io.write_file(output_buff, len(output_buff)-(mid - left_offset)*2, (mid - left_offset)*2, name, left_offset)
-                break
-            else:
-                io.read_file(name, left_offset, mid - left_offset, output_buff, 0)
-                io.read_file(name, mid + 1, mid - left_offset, output_buff, mid - left_offset)
-                output_buff.reverse()
-                io.write_file(output_buff, len(output_buff)-(mid - left_offset)*2, mid - left_offset, name, left_offset)
-                io.write_file(output_buff, len(output_buff)-(mid - left_offset), mid - left_offset, name, mid + 1)
-                break
-
-
+    while left_offset < right_offset:
         io.read_file(name, left_offset, chunk, output_buff, 0)
         io.read_file(name, right_offset, chunk, output_buff, chunk)
 
         output_buff.reverse()
 
-        io.write_file(output_buff, 0, chunk, name, left_offset)
-        io.write_file(output_buff, chunk, chunk, name, right_offset)
+        io.write_file(output_buff, len(output_buff)-2*chunk, chunk, name, left_offset)
+        io.write_file(output_buff, len(output_buff)-chunk, chunk, name, right_offset)
 
         left_offset += chunk
+        chunk = min(chunk, max((mid - left_offset),1))
         right_offset -= chunk
 
 
 if __name__ == "__main__":
-    reverse_file_in_memory(FileIo(), name='test.txt', buf_size=6)
+    reverse_file_in_memory(FileIo(), name='test.txt', buf_size=4
+                           )
