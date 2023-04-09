@@ -2,6 +2,7 @@ import logging
 import string
 
 import pytest
+import itertools
 
 from reverse_file_task2 import reverse_file_in_memory
 from stub_io import StubIo
@@ -30,14 +31,23 @@ def test_task_2(size):
     _logger.info('Reversing completed')
     assert io.get_file_content('abc') == bytes(reversed(data))
 
-@pytest.mark.parametrize('size, allowed_buffer', [(0, 2), (7, 5), (33, 6), (30, 6), (1, 2), (3, 20), (150, 8),
-                                                  (20, 4)])
+
+
+size = list(range(20))
+allowed_buffer = list(range(20))
+@pytest.mark.parametrize('size, allowed_buffer',
+    itertools.product(size, allowed_buffer)
+)
 def test_buffered_reverse(size, allowed_buffer):
     data = _get_data(size)
     io = StubIo()
     io.register_file('test_buffered_reverse', len(data))
     io.write_file(data, 0, len(data), 'test_buffered_reverse', 0)
     _logger.info('Reversing started')
-    reverse_file_buffered.reverse_file_in_memory(io, 'test_buffered_reverse', allowed_buffer)
-    _logger.info('Reversing completed')
-    assert io.get_file_content('test_buffered_reverse') == bytes(reversed(data))
+    if allowed_buffer < 2:
+        with pytest.raises(AssertionError):
+            reverse_file_buffered.reverse_file_in_memory(io, 'test_buffered_reverse', allowed_buffer)
+    else:
+        reverse_file_buffered.reverse_file_in_memory(io, 'test_buffered_reverse', allowed_buffer)
+        _logger.info('Reversing completed')
+        assert io.get_file_content('test_buffered_reverse') == bytes(reversed(data))
