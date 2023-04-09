@@ -31,10 +31,8 @@ def test_task_2(size):
     _logger.info('Reversing completed')
     assert io.get_file_content('abc') == bytes(reversed(data))
 
-
-
-size = list(range(20))
-allowed_buffer = list(range(20))
+size = list(range(30))
+allowed_buffer = list(range(30))
 @pytest.mark.parametrize('size, allowed_buffer',
     itertools.product(size, allowed_buffer)
 )

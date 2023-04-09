@@ -6,19 +6,12 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
     assert buf_size >= 2, "Minimum allowed buf_size is 2"
 
     length = io.file_length(name)
-    chunk = buf_size//2
-    output_buff = bytearray(chunk*2)
+    chunk = min(buf_size//2, max(length-buf_size//2, 1))
+    output_buff = bytearray(min(chunk*2, length))
     mid = length//2
     left_offset = 0
-    right_offset = length - left_offset - min(chunk, mid - left_offset)
+    right_offset = length - left_offset - min(chunk, max(mid - left_offset, max(length-buf_size//2, 1)))
 
-
-    if length < buf_size:
-        chunk = length
-        io.read_file(name, left_offset, chunk, output_buff, 0)
-        output_buff.reverse()
-        io.write_file(output_buff, len(output_buff)-chunk, chunk, name, left_offset)
-        return
 
     while left_offset < right_offset:
         io.read_file(name, left_offset, chunk, output_buff, 0)
@@ -35,5 +28,5 @@ def reverse_file_in_memory(io: Io, name: str, buf_size: int):
 
 
 if __name__ == "__main__":
-    reverse_file_in_memory(FileIo(), name='test.txt', buf_size=4
+    reverse_file_in_memory(FileIo(), name='test.txt', buf_size=3
                            )
